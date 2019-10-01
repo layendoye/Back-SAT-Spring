@@ -13,6 +13,7 @@ import java.util.Optional;
 
 @Repository
 public interface EntrepriseRepository extends JpaRepository<Entreprise, Integer> {
-    @Query("SELECT e FROM Entreprise e WHERE e.raisonSociale != 'SA Transfert' AND e.raisonSociale!='Etat du Sénégal' ")
+    @Query("SELECT e FROM Entreprise e WHERE e.raisonSociale <> 'SA Transfert' AND e.raisonSociale <> 'Etat du Sénégal' ")
     public List<Entreprise> findPartenaire();
+
 }

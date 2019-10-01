@@ -11,21 +11,19 @@ import java.util.Date;
 
 @Entity
 @Data//Pour la serialisation à double sens
-//@EqualsAndHashCode(exclude = "entreprise")//Pour la serialisation à double sens
+@EqualsAndHashCode(exclude = "entreprise")//Pour la serialisation à double sens
 public class Depot {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @NotBlank
     private Date date;
 
-    @NotBlank
-    private int montant;
+    private long montant;
 
     @JoinColumn(name = "user_id",referencedColumnName = "id")
     @ManyToOne(optional=false)
-    //@JsonIgnoreProperties("depots")
+    @JsonIgnoreProperties({"entreprise", "roles"})
     private User caissier;
 
     @JoinColumn(name = "compte_id",referencedColumnName = "id")
@@ -52,11 +50,11 @@ public class Depot {
         this.date = date;
     }
 
-    public int getMontant() {
+    public long getMontant() {
         return montant;
     }
 
-    public void setMontant(int montant) {
+    public void setMontant(long montant) {
         this.montant = montant;
     }
 

@@ -10,7 +10,7 @@ import javax.validation.constraints.Size;
 
 @Entity
 @Data//Pour la serialisation à double sens
-@EqualsAndHashCode(exclude = "entreprise")//Pour la serialisation à double sens
+@EqualsAndHashCode(exclude = "caissier")//Pour la serialisation à double sens
 @Table(name = "compte", uniqueConstraints = {
         @UniqueConstraint(columnNames = {
                 "numeroCompte"
@@ -25,8 +25,7 @@ public class Compte {
     @Size(min=3, max = 50)
     private String numeroCompte;
 
-    @NotBlank
-    private int solde;
+    private long solde;
 
     @JoinColumn(name = "entreprise_id",referencedColumnName = "id")
     @ManyToOne(optional=false)//plusieurs user une entreprise (optional=false pour dire que c est obligatoire)
@@ -36,7 +35,7 @@ public class Compte {
     public Compte() {
     }
 
-    public Compte(@NotBlank @Size(min = 3, max = 50) String numeroCompte, @NotBlank int solde, Entreprise entreprise) {
+    public Compte(@NotBlank @Size(min = 3, max = 50) String numeroCompte, @NotBlank long solde, Entreprise entreprise) {
         this.numeroCompte = numeroCompte;
         this.solde = solde;
         this.entreprise = entreprise;
@@ -58,11 +57,11 @@ public class Compte {
         this.numeroCompte = numeroCompte;
     }
 
-    public int getSolde() {
+    public long getSolde() {
         return solde;
     }
 
-    public void setSolde(int solde) {
+    public void setSolde(long solde) {
         this.solde = solde;
     }
 

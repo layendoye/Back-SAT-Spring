@@ -35,8 +35,6 @@ public class Entreprise {
     @Size(min=3, max = 50)
     private String adresse;
 
-    @NotBlank
-    @Size(min=3, max = 50)
     private String status;
 
     @NotBlank

@@ -1,14 +1,15 @@
 package com.frontSAT.fSAT.controller;
 
-import com.frontSAT.fSAT.model.RegistrationUser;
+import com.frontSAT.fSAT.form.RegistrationUser;
 import com.frontSAT.fSAT.model.Role;
 import com.frontSAT.fSAT.model.User;
 import com.frontSAT.fSAT.services.RoleService;
 import com.frontSAT.fSAT.services.UserDetailsServiceImpl;
-import com.frontSAT.fSAT.services.UserPrinciple;
 import com.frontSAT.fSAT.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
@@ -30,9 +31,9 @@ public class SecurityController {
     @Autowired
     RoleService roleService;
 
-    @PostMapping(value = "/inscription", consumes = {MediaType.APPLICATION_JSON_VALUE})
+    @PostMapping(value = "/inscription")
     @PreAuthorize("hasAnyAuthority('ROLE_Super_admin','ROLE_admin_Principal','ROLE_admin')")
-    public User inscriptionUtilisateur(@RequestBody RegistrationUser registrationUser) throws Exception {
+    public ResponseEntity<String> inscriptionUtilisateur(RegistrationUser registrationUser) throws Exception {
         if(registrationUser.getPassword().equals(registrationUser.getConfirmPassword())==false){
             throw new Exception("Les deux mot de passe ne correspondent pas");
         }
@@ -43,11 +44,13 @@ public class SecurityController {
         role.setId(registrationUser.getProfil());//l id sera envoyé grace au value du select
         roles.add(role);
         user.setRoles(roles);
-        return userService.save(user);
+        user.setEntreprise(userDetailsService.getUserConnecte().getEntreprise());
+        userService.save(user);
+        return new ResponseEntity<>("Enregistrer", HttpStatus.OK);
     }
 
     @PostMapping(value = "/user/update/{id}", consumes = {MediaType.APPLICATION_JSON_VALUE})
-    public User updateUser(@RequestBody RegistrationUser updateUser, @PathVariable int id) throws Exception {
+    public ResponseEntity<String> updateUser(@RequestBody RegistrationUser updateUser, @PathVariable int id) throws Exception {
         User userConnecte=userDetailsService.getUserConnecte();
         if(updateUser.getPassword().equals(updateUser.getConfirmPassword())==false){
             throw new Exception("Les deux mot de passe ne correspondent pas");
@@ -77,7 +80,8 @@ public class SecurityController {
         role.setId(updateUser.getProfil());//l id sera envoyé grace au value du select
         roles.add(role);
         user.setRoles(roles);
-        return userService.save(user);
+        userService.save(user);
+        return new ResponseEntity<>("Modifier", HttpStatus.OK);
     }
 
     @GetMapping(value = "/liste")
@@ -86,7 +90,9 @@ public class SecurityController {
     }
 
     @GetMapping(value = "/userConnecte")
-    public User userConnecte(){
-        return userDetailsService.getUserConnecte();
+    public ResponseEntity<String> userConnecte(){
+        userDetailsService.getUserConnecte();
+        return new ResponseEntity<>("Enregistrer", HttpStatus.OK);
+
     }
 }

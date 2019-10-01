@@ -6,6 +6,7 @@ import javax.persistence.*;
 import java.util.Date;
 
 @Entity
+@Data
 public class UserCompteActuel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

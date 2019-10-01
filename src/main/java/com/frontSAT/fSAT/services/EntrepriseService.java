@@ -15,10 +15,7 @@ public class EntrepriseService {
     @Autowired
     EntrepriseRepository entrepriseRepository;
 
-    public Entreprise save(Entreprise entreprise){
-
-        return entrepriseRepository.save(entreprise);
-    }
+    public Entreprise save(Entreprise entreprise){ return entrepriseRepository.save(entreprise); }
 
     public List<Entreprise> findAll(){
         return entrepriseRepository.findAll();
@@ -26,4 +23,5 @@ public class EntrepriseService {
     public Optional<Entreprise> findById(int id){
         return entrepriseRepository.findById(id);
     }
+    public List<Entreprise> findPartenaire(){return entrepriseRepository.findPartenaire(); }
 }
