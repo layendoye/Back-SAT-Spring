@@ -29,7 +29,8 @@ public class Compte {
 
     @JoinColumn(name = "entreprise_id",referencedColumnName = "id")
     @ManyToOne(optional=false)//plusieurs user une entreprise (optional=false pour dire que c est obligatoire)
-    @JsonIgnoreProperties("comptes")//Pour la serialisation à double sens (users qui est dans entreprise)
+    //Pour la serialisation à double sens (users qui est dans entreprise)
+    @JsonIgnoreProperties({"comptes", "raisonSociale","ninea","adresse","status","telephoneEntreprise","users","emailEntreprise"})
     private Entreprise entreprise;
 
     public Compte() {

@@ -39,11 +39,10 @@ public class EntrepriseController {
         return entrepriseService.findPartenaire();
     }
     @GetMapping(value = "/entreprise/{id}")
-    public Optional<Entreprise> lister(@PathVariable int id) throws Exception {
-        Optional<Entreprise> entreprise = entrepriseService.findById(id);
-        if(entreprise==null){
-            throw new Exception("Cet utilisateur n'existe pas !");
-        }
+    public Entreprise lister(@PathVariable int id) throws Exception {
+        Entreprise entreprise = entrepriseService.findById(id).orElseThrow(
+                ()->new Exception("Cette entreprise n'existe pas !")
+        );
         return entreprise;
     }
     @PostMapping(value = "/partenaires/add")
@@ -187,7 +186,7 @@ public class EntrepriseController {
     }
 
     @PostMapping(value = "/changer/compte", consumes = {MediaType.APPLICATION_JSON_VALUE})
-    //@PreAuthorize("hasAnyAuthority('ROLE_admin-Principal','ROLE_admin')")
+    @PreAuthorize("hasAnyAuthority('ROLE_admin-Principal','ROLE_admin')")
     public Message changeCompte(@RequestBody AffectationCompte affectationCompte) throws Exception {
 
         Compte compte=compteService.findById(affectationCompte.getCompte()).orElseThrow(
@@ -222,4 +221,12 @@ public class EntrepriseController {
         return new Message(201,"Le compte de l'utilisateur a été modifié !!");
     }
 
+    @GetMapping(value = "/compte/entreprise/{id}")
+    @PreAuthorize("hasAnyAuthority('ROLE_Super_admin','ROLE_admin_Principal','ROLE_admin')")
+    public List<Compte> getCompte(@PathVariable int id) throws Exception {
+        Entreprise entreprise = entrepriseService.findById(id).orElseThrow(
+                ()->new Exception("Cette entreprise n'existe pas !")
+        );
+        return entreprise.getComptes();
+    }
 }
