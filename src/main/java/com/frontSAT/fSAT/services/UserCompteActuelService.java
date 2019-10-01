@@ -1,7 +1,11 @@
 package com.frontSAT.fSAT.services;
 
 import com.frontSAT.fSAT.model.Compte;
+import com.frontSAT.fSAT.model.User;
+import com.frontSAT.fSAT.model.UserCompteActuel;
 import com.frontSAT.fSAT.repository.CompteRepository;
+import com.frontSAT.fSAT.repository.UserCompteActuelRepository;
+import com.frontSAT.fSAT.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -11,19 +15,20 @@ import java.util.Optional;
 @Service
 public class UserCompteActuelService {
     @Autowired
-    CompteRepository compteRepository;
+    UserCompteActuelRepository userCompteActuelRepository;
 
-    public Compte save(Compte compte){
-        return compteRepository.save(compte);
+    public UserCompteActuel save(UserCompteActuel userCompteActuel){
+        return userCompteActuelRepository.save(userCompteActuel);
     }
 
-    public List<Compte> findAll(){
-        return compteRepository.findAll();
+    public List<UserCompteActuel> findAll(){
+        return userCompteActuelRepository.findAll();
     }
-    public Optional<Compte> findById(int id){
-        return compteRepository.findById(id);
+    public Optional<UserCompteActuel> findById(int id){
+        return userCompteActuelRepository.findById(id);
     }
-    public Optional<Compte> findByNumeroCompte(String numeroCompte){
-        return compteRepository.findCompteByNumeroCompte(numeroCompte);
+    public List<UserCompteActuel>findUserCompteActuelByUser(User user){
+        return userCompteActuelRepository.findUserCompteActuelByUser(user);
     }
+
 }

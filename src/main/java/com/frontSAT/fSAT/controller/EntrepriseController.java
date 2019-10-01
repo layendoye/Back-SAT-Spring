@@ -31,6 +31,8 @@ public class EntrepriseController {
     PasswordEncoder encoder;
     @Autowired
     UserDetailsServiceImpl userDetailsService;
+    @Autowired
+    UserCompteActuelService userCompteActuelService;
 
     @GetMapping(value = "/entreprises/liste")
     public List<Entreprise> lister(){
@@ -185,8 +187,8 @@ public class EntrepriseController {
     }
 
     @PostMapping(value = "/changer/compte", consumes = {MediaType.APPLICATION_JSON_VALUE})
-    @PreAuthorize("hasAnyAuthority('ROLE_admin-Principal','ROLE_admin')")
-    public void changeCompte(@RequestBody AffectationCompte affectationCompte) throws Exception {
+    //@PreAuthorize("hasAnyAuthority('ROLE_admin-Principal','ROLE_admin')")
+    public Message changeCompte(@RequestBody AffectationCompte affectationCompte) throws Exception {
 
         Compte compte=compteService.findById(affectationCompte.getCompte()).orElseThrow(
                 ()-> new Exception("Ce compte n'existe pas !")
@@ -198,11 +200,26 @@ public class EntrepriseController {
             throw new HttpException(403,'Impossible d\'affecter un compte à et utilisateur !');
         }*/
         User userconnecte=userDetailsService.getUserConnecte();
-        if(user.getEntreprise()!=userconnecte.getEntreprise()){
+        if(user.getEntreprise().getId()!=userconnecte.getEntreprise().getId()){
             throw new Exception("Cet utilisateur n'appartient pas à votre entreprise !");
         }
+        else if(compte.getEntreprise().getId()!=userconnecte.getEntreprise().getId()){
+            throw new Exception("Ce compte n'appartient pas à votre entreprise !");
+        }
         int idcompActuel=0;
-
+        List<UserCompteActuel> userComp=userCompteActuelService.findUserCompteActuelByUser(user);
+        if(userComp.size()!=0){
+            idcompActuel=userComp.get(userComp.size()-1).getCompte().getId();//l id du compte qu il utilise actuellement
+        }
+        if(idcompActuel==compte.getId()){
+            throw new Exception("Cet utilisateur utilise ce compte actuellement!");
+        }
+        UserCompteActuel userCompte=new UserCompteActuel();
+        userCompte.setCompte(compte);
+        userCompte.setUser(user);
+        userCompte.setDateAffectation(new Date());
+        userCompteActuelService.save(userCompte);
+        return new Message(201,"Le compte de l'utilisateur a été modifié !!");
     }
 
 }
