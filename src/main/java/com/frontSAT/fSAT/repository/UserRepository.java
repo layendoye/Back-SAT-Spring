@@ -17,5 +17,4 @@ public interface UserRepository extends JpaRepository<User, Integer> {
     Boolean existsByEmail(String email);
     //@Query("SELECT u FROM User u WHERE u.login IS Null")
     //public List<User>user();//retourne les users dont le user est null
-
 }

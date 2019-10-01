@@ -1,5 +1,6 @@
 package com.frontSAT.fSAT.controller;
 
+import com.frontSAT.fSAT.form.AffectationCompte;
 import com.frontSAT.fSAT.form.DepotForm;
 import com.frontSAT.fSAT.form.RegistrationEntrep;
 import com.frontSAT.fSAT.model.*;
@@ -182,4 +183,26 @@ public class EntrepriseController {
         MessageCompte message=new MessageCompte(200,msg,msgCompte);
         return message;
     }
+
+    @PostMapping(value = "/changer/compte", consumes = {MediaType.APPLICATION_JSON_VALUE})
+    @PreAuthorize("hasAnyAuthority('ROLE_admin-Principal','ROLE_admin')")
+    public void changeCompte(@RequestBody AffectationCompte affectationCompte) throws Exception {
+
+        Compte compte=compteService.findById(affectationCompte.getCompte()).orElseThrow(
+                ()-> new Exception("Ce compte n'existe pas !")
+        );
+        User user=userService.findById(affectationCompte.getUtilisateur()).orElseThrow(
+                ()-> new Exception("Cet utilisateur n'existe pas !")
+        );
+        /*if($user->getRoles()[0]=='ROLE_Super-admin' || $user->getRoles()[0]=='ROLE_Caissier'){
+            throw new HttpException(403,'Impossible d\'affecter un compte à et utilisateur !');
+        }*/
+        User userconnecte=userDetailsService.getUserConnecte();
+        if(user.getEntreprise()!=userconnecte.getEntreprise()){
+            throw new Exception("Cet utilisateur n'appartient pas à votre entreprise !");
+        }
+        int idcompActuel=0;
+
+    }
+
 }
