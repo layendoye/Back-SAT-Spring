@@ -45,7 +45,7 @@ public class EntrepriseController {
     }
     @PostMapping(value = "/partenaires/add")
     @PreAuthorize("hasAnyAuthority('ROLE_Super_admin')")
-    public ResponseEntity<String> addPartenaire(RegistrationEntrep registrationEntrep) {//regarder les transactions
+    public MessageCompte addPartenaire(RegistrationEntrep registrationEntrep) {//regarder les transactions
         Entreprise entreprise=new Entreprise(registrationEntrep.getRaisonSociale(),registrationEntrep.getNinea(),registrationEntrep.getAdresse(),"Actif",registrationEntrep.getTelephoneEntreprise(),registrationEntrep.getEmailEntreprise());
         entrepriseService.save(entreprise);
         Compte compte=new Compte();
@@ -65,12 +65,11 @@ public class EntrepriseController {
         user.setRoles(roles);
         user.setEntreprise(entreprise);
         userService.save(user);
-        /*$afficher = [
-        $this->status => 201,
-                $this->message => 'Le partenaire '.$entreprise->getRaisonSociale().' ainsi que son admin principal ont bien été ajouté !! ',
-                $this->compteStr =>'Le compte numéro '.$compte->getNumeroCompte().' lui a été assigné'
-            ]*/
-        return new ResponseEntity<>("Enregistrer", HttpStatus.OK);
+
+        String msg="Le partenaire  "+ entreprise.getRaisonSociale()+" ainsi que son admin principal ont bien été ajouté !! ";
+        String msgCompte="Le compte numéro "+compte.getNumeroCompte()+"  lui a été assigné";
+        MessageCompte message=new MessageCompte(200,msg,msgCompte);
+        return message;
     }
 
     @PostMapping(value = "/partenaires/update/{id}", consumes = {MediaType.APPLICATION_JSON_VALUE})
@@ -116,7 +115,7 @@ public class EntrepriseController {
         if(entreprise.getRaisonSociale().equals("SA Transfert") || entreprise.getRaisonSociale().equals("Etat du Sénégal")){
             throw new Exception("Impossible de le bloquer !");
         }
-        String msg="";
+        String msg;
         if(entreprise.getStatus().equals("Actif")){
             entreprise.setStatus("Bloqué");
             msg="Bloqué";
@@ -146,9 +145,9 @@ public class EntrepriseController {
             throw new Exception("Impossible de bloquer le super-admin principal !");
         }
         /*if(userConnecte.getRoles()[0]=='ROLE_admin' && user.getRoles()[0]=='ROLE_admin-Principal'){
-            throw new HttpException(403,'Impossible de bloquer l\' admin principal !');
+            throw new Exception("Impossible de bloquer l' admin principal !");
         }*/
-        String msg="";
+        String msg;
         if(user.getStatus().equals("Actif")){
             user.setStatus("Bloqué");
             msg="Bloqué";
@@ -158,6 +157,29 @@ public class EntrepriseController {
             msg="Débloqué";
         }
         Message message=new Message(200,msg);
+        return message;
+    }
+
+    @GetMapping(value = "/nouveau/compte/{id}")
+    @PreAuthorize("hasAnyAuthority('ROLE_Super_admin')")
+    public MessageCompte addCompte(@PathVariable int id) throws Exception{
+        Entreprise entreprise=entrepriseService.findById(id).orElseThrow(
+                ()-> new Exception("Ce partenaire n'existe pas !!")
+        );
+        if(entreprise.getRaisonSociale().equals("SA Transfert") || entreprise.getRaisonSociale().equals("Etat du Sénégal")){
+            throw new Exception("Impossible de lui ajouter un compte !");
+        }
+        Compte compte=new Compte();
+        SimpleDateFormat formater = new SimpleDateFormat("yyMM ddhh mmss");//2109 0225 1763
+        Date now=new Date();
+        String numCompte=formater.format(now);
+        compte.setNumeroCompte(numCompte);
+        compte.setEntreprise(entreprise);
+        compte.setSolde(0);
+        compteService.save(compte);
+        String msg="Un nouveau compte est créé pour l'entreprise "+ entreprise.getRaisonSociale();
+        String msgCompte=compte.getNumeroCompte();
+        MessageCompte message=new MessageCompte(200,msg,msgCompte);
         return message;
     }
 }

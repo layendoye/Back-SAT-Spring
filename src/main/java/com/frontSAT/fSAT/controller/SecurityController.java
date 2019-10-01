@@ -55,16 +55,16 @@ public class SecurityController {
         if(updateUser.getPassword().equals(updateUser.getConfirmPassword())==false){
             throw new Exception("Les deux mot de passe ne correspondent pas");
         }
-        if(userService.findById(id)==null){
-            throw new Exception("Cet utilisateur n'existe pas !");
-        }
-
+        User user1=userService.findById(id).orElseThrow(
+                ()-> new Exception("Cet utilisateur n'existe pas !")
+        );
 
         if(id==1 && userConnecte.getId()!=1){
             throw new Exception("Vous ne pouvez pas modifier les informations de l'admin principal !");
         }
         User user=new User(updateUser.getNom(),updateUser.getUsername(),updateUser.getEmail(),updateUser.getPassword(),updateUser.getTelephone(),updateUser.getNci(),updateUser.getImage(),"Actif");
         user.setId(id);
+        user.setStatus(user1.getStatus());
         user.setNom(updateUser.getNom());
         user.setUsername(updateUser.getUsername());
         user.setEmail(updateUser.getEmail());
