@@ -229,4 +229,12 @@ public class EntrepriseController {
         );
         return entreprise.getComptes();
     }
+
+    @GetMapping(value = "/comptes/all")
+    @PreAuthorize("hasAnyAuthority('ROLE_Super_admin')")
+    public List<Compte> getAllCompte(){
+        return compteService.findAll();
+    }
+
+
 }
