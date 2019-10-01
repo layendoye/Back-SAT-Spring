@@ -107,8 +107,8 @@ public class EntrepriseController {
         return depotService.save(depot);
     }
 
-    @PostMapping(value = "/bloque/entreprises/{id}", consumes = {MediaType.APPLICATION_JSON_VALUE})
-    @PreAuthorize("hasAnyAuthority('ROLE_Super-admin')")
+    @GetMapping(value = "/bloque/entreprises/{id}")
+    @PreAuthorize("hasAnyAuthority('ROLE_Super_admin')")
     public Message bloqueEntrep(@PathVariable int id) throws Exception{
         Entreprise entreprise=entrepriseService.findById(id).orElseThrow(
                 ()-> new Exception("Ce partenaire n'existe pas !!")
@@ -123,10 +123,41 @@ public class EntrepriseController {
         }
         else {
             entreprise.setStatus("Actif");
-            msg="Actif";
+            msg="Débloqué";
         }
         Message message=new Message(200,msg);
         return message;
     }
 
+    @GetMapping(value = "/bloque/user/{id}")
+    @PreAuthorize("hasAnyAuthority('ROLE_Super_admin','ROLE_admin_Principal','ROLE_admin')")
+    public Message bloqueUser(@PathVariable int id) throws Exception{
+        User user=userService.findById(id).orElseThrow(
+                ()-> new Exception("Cet utilisateur n'existe pas !!")
+        );
+        User userConnecte=userDetailsService.getUserConnecte();
+        if(userConnecte==user){
+            throw new Exception("Impossible de se bloquer soit même !");
+        }
+        else if(user.getEntreprise()!=userConnecte.getEntreprise()){
+            throw new Exception("Impossible de bloquer cet utilisateur !");
+        }
+        else if(user.getId()==1){
+            throw new Exception("Impossible de bloquer le super-admin principal !");
+        }
+        /*if(userConnecte.getRoles()[0]=='ROLE_admin' && user.getRoles()[0]=='ROLE_admin-Principal'){
+            throw new HttpException(403,'Impossible de bloquer l\' admin principal !');
+        }*/
+        String msg="";
+        if(user.getStatus().equals("Actif")){
+            user.setStatus("Bloqué");
+            msg="Bloqué";
+        }
+        else {
+            user.setStatus("Actif");
+            msg="Débloqué";
+        }
+        Message message=new Message(200,msg);
+        return message;
+    }
 }
