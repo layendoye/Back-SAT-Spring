@@ -236,7 +236,7 @@ public class EntrepriseController {
         return compteService.findAll();
     }
 
-    @GetMapping(value = "/utilisateur/affecterCompte/{id}")//Une erreur à corriger
+    @GetMapping(value = "/utilisateur/affecterCompte/{id}")
     @PreAuthorize("hasAnyAuthority('ROLE_admin_Principal','ROLE_admin')")
     public List<UserCompteActuel> getUtilisateursActuCompte(@PathVariable int id)throws Exception{
         List<UserCompteActuel> tab=new ArrayList<UserCompteActuel>();
@@ -244,7 +244,7 @@ public class EntrepriseController {
                 ()-> new Exception("Ce compte n'existe pas !!")
         );
         User userConnecte=userDetailsService.getUserConnecte();
-        List<User> users=userService.findUsersByEntreprise(userConnecte.getEntreprise());//tous les users de l entreprise
+        List<User> users=userService.findUsersByEntreprise(userConnecte.getEntreprise());//tous les users de l entreprise ne pas pointé directement sur .getUser() ca génére des erreurs
 
         for(int i=0;i<users.size();i++){
             List<UserCompteActuel> tous=userCompteActuelService.findUserCompteActuelByUser(users.get(i));
@@ -299,4 +299,15 @@ public class EntrepriseController {
         User userConnecte=userDetailsService.getUserConnecte();
         return userService.findUsersByEntreprise(userConnecte.getEntreprise());
     }
+
+
+    @GetMapping(value = "/compte/user/{id}")
+    @PreAuthorize("hasAnyAuthority('ROLE_Super_admin','ROLE_admin','ROLE_admin_Principal')")
+    public List<UserCompteActuel> userCompte(@PathVariable int id)throws Exception{
+        User user=userService.findById(id).orElseThrow(
+                ()->new Exception("Cet utilisateur n'existe pas !!")
+        );
+        return userCompteActuelService.findUserCompteActuelByUser(user);
+    }
+
 }
