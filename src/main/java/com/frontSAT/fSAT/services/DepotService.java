@@ -29,4 +29,7 @@ public class DepotService {
     public List<Depot> findMesDepots(User caissier, Compte compte){
         return depotRepository.findMesDepots(caissier,compte);
     }
+    public List<Depot>findDepotsByCaissier(User caissier){
+        return depotRepository.findDepotsByCaissier(caissier);
+    }
 }

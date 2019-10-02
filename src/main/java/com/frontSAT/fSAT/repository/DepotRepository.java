@@ -16,4 +16,5 @@ import java.util.List;
 public interface DepotRepository extends JpaRepository<Depot, Integer> {
     @Query("SELECT d FROM Depot d WHERE d.caissier = :user AND d.compte = :compte")
     List<Depot> findMesDepots(@Param("user")User caissier, @Param("compte")Compte compte);
+    List<Depot>findDepotsByCaissier(User caissier);
 }

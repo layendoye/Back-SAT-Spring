@@ -310,7 +310,7 @@ public class EntrepriseController {
     }
 
     @PostMapping(value = "/compte/Mesdepots", consumes = {MediaType.APPLICATION_JSON_VALUE})
-    //@PreAuthorize("hasAnyAuthority('ROLE_Caissier')")
+    @PreAuthorize("hasAnyAuthority('ROLE_Caissier')")
     public List<Depot> showDepotCompte(@RequestBody DepotForm depotForm) throws Exception {
         User caissier = userDetailsService.getUserConnecte();
         Compte compte=compteService.findByNumeroCompte(depotForm.getCompte()).orElseThrow(
@@ -318,4 +318,42 @@ public class EntrepriseController {
         );
         return depotService.findMesDepots(caissier,compte);
     }
+
+    @GetMapping(value = "/depot/all/{id}", consumes = {MediaType.APPLICATION_JSON_VALUE})
+    @PreAuthorize("hasAnyAuthority('ROLE_Caissier')")
+    public DepotMoyen showDepotUser(@PathVariable int id) throws Exception {
+        User caissier = userService.findById(id).orElseThrow(
+                ()-> new Exception("Cet utilisateur n'existe pas !")
+        );
+        List<Depot>depots=depotService.findDepotsByCaissier(caissier);
+        int moyenne=0;
+        int somme=0;
+        for(int i=0;i<depots.size();i++){
+            somme+=depots.get(i).getMontant();
+        }
+        if(depots.size()>0){
+            moyenne=(int)(somme/depots.size());
+        }
+        return new DepotMoyen(depots,moyenne);
+    }
+
+    @GetMapping(value = "/entreprise/responsable/{id}", consumes = {MediaType.APPLICATION_JSON_VALUE})
+    @PreAuthorize("hasAnyAuthority('ROLE_Super_admin')")//à modifier non fini
+    public User getResponsable(@PathVariable int id) throws Exception {
+        Entreprise entreprise = entrepriseService.findById(id).orElseThrow(
+                ()-> new Exception("Cette entreprise n'existe pas !")
+        );
+        User adminPart=new User();
+        return adminPart;
+    }
+
+    @PostMapping(value = "/compte/numeroCompte", consumes = {MediaType.APPLICATION_JSON_VALUE})
+    @PreAuthorize("hasAnyAuthority('ROLE_Caissier','ROLE_Super_admin')")
+    public Compte getLeCompte(@RequestBody DepotForm depotForm) throws Exception {
+        Compte compte=compteService.findByNumeroCompte(depotForm.getCompte()).orElseThrow(
+                ()-> new Exception("Ce compte n'existe pas !")
+        );
+        return compte;
+    }
+
 }
