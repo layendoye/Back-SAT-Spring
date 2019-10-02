@@ -236,5 +236,26 @@ public class EntrepriseController {
         return compteService.findAll();
     }
 
+    @GetMapping(value = "/utilisateur/affecterCompte/{id}")
+    @PreAuthorize("hasAnyAuthority('ROLE_admin_Principal','ROLE_admin')")
+    public List<UserCompteActuel> getUtilisateursActuCompte(@PathVariable int id)throws Exception{
+        List<UserCompteActuel> tab=new ArrayList<UserCompteActuel>();
+        Compte compte=compteService.findById(id).orElseThrow(
+                ()-> new Exception("Ce compte n'existe pas !!")
+        );
+        User userConnecte=userDetailsService.getUserConnecte();
+        List<User> users=userConnecte.getEntreprise().getUsers();//tous les users de l entreprise
 
+        for(int i=0;i<users.size();i++){
+            List<UserCompteActuel> tous=userCompteActuelService.findUserCompteActuelByUser(users.get(i));
+            if(tous.size()!=0){
+                UserCompteActuel userCompte=tous.get(tous.size()-1);//l id du compte qu il utilise actuellement
+                Compte compteAct=userCompte.getCompte();
+                if(compteAct.getId()==compte.getId()){
+                    tab.add(userCompte);
+                }
+            }
+        }
+        return tab;
+    }
 }

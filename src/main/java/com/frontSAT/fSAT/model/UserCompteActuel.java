@@ -1,5 +1,6 @@
 package com.frontSAT.fSAT.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -18,6 +19,7 @@ public class UserCompteActuel {
 
     @JoinColumn(name = "compte_id",referencedColumnName = "id")
     @ManyToOne(optional=false)
+
     private Compte compte;
 
     private Date dateAffectation;

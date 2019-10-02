@@ -46,7 +46,8 @@ public class Entreprise {
     private String emailEntreprise;
 
     @OneToMany(mappedBy ="entreprise")
-    @JsonIgnoreProperties("entreprise")//Pour la serialisation à double sens (l objet service dans la classe user)
+    //Pour la serialisation à double sens (l objet service dans la classe user)
+    @JsonIgnoreProperties({"entreprise", "nom","username","email","telephone","nci","image","status","roles"})
     public List<User> users;
 
     @OneToMany(mappedBy ="entreprise")
