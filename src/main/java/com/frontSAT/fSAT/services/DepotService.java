@@ -2,6 +2,7 @@ package com.frontSAT.fSAT.services;
 
 import com.frontSAT.fSAT.model.Compte;
 import com.frontSAT.fSAT.model.Depot;
+import com.frontSAT.fSAT.model.User;
 import com.frontSAT.fSAT.repository.CompteRepository;
 import com.frontSAT.fSAT.repository.DepotRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,5 +25,8 @@ public class DepotService {
     }
     public Optional<Depot> findById(int id){
         return depotRepository.findById(id);
+    }
+    public List<Depot> findMesDepots(User caissier, Compte compte){
+        return depotRepository.findMesDepots(caissier,compte);
     }
 }

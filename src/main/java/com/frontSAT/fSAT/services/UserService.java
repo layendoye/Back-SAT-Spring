@@ -1,9 +1,12 @@
 package com.frontSAT.fSAT.services;
 
+import com.frontSAT.fSAT.model.Compte;
+import com.frontSAT.fSAT.model.Depot;
 import com.frontSAT.fSAT.model.Entreprise;
 import com.frontSAT.fSAT.model.User;
 import com.frontSAT.fSAT.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -31,4 +34,6 @@ public class UserService  {
     public List<User>findUsersByEntreprise(Entreprise entreprise){
         return userRepository.findUsersByEntreprise(entreprise);
     }
+
+
 }

@@ -300,7 +300,6 @@ public class EntrepriseController {
         return userService.findUsersByEntreprise(userConnecte.getEntreprise());
     }
 
-
     @GetMapping(value = "/compte/user/{id}")
     @PreAuthorize("hasAnyAuthority('ROLE_Super_admin','ROLE_admin','ROLE_admin_Principal')")
     public List<UserCompteActuel> userCompte(@PathVariable int id)throws Exception{
@@ -310,4 +309,13 @@ public class EntrepriseController {
         return userCompteActuelService.findUserCompteActuelByUser(user);
     }
 
+    @PostMapping(value = "/compte/Mesdepots", consumes = {MediaType.APPLICATION_JSON_VALUE})
+    //@PreAuthorize("hasAnyAuthority('ROLE_Caissier')")
+    public List<Depot> showDepotCompte(@RequestBody DepotForm depotForm) throws Exception {
+        User caissier = userDetailsService.getUserConnecte();
+        Compte compte=compteService.findByNumeroCompte(depotForm.getCompte()).orElseThrow(
+                ()-> new Exception("Ce compte n'existe pas !")
+        );
+        return depotService.findMesDepots(caissier,compte);
+    }
 }
