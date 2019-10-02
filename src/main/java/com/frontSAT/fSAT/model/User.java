@@ -63,9 +63,10 @@ public class User{
     @Size(min=2, max = 100)
     private String status;
 
-    @JoinColumn(name = "entreprise_id",referencedColumnName = "id")
+    @JoinColumn(name = "entreprise_id",referencedColumnName = "id",nullable = false)
     @ManyToOne(optional=false)//plusieurs user une entreprise (optional=false pour dire que c est obligatoire)
-    @JsonIgnoreProperties("users")//Pour la serialisation à double sens (users qui est dans entreprise)
+    @JsonIgnoreProperties({"users","comptes"})//Pour la serialisation à double sens (users qui est dans entreprise)
+
     private Entreprise entreprise;
 
     @ManyToMany(fetch = FetchType.LAZY)

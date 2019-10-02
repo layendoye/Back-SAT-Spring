@@ -1,5 +1,6 @@
 package com.frontSAT.fSAT.services;
 
+import com.frontSAT.fSAT.model.Entreprise;
 import com.frontSAT.fSAT.model.User;
 import com.frontSAT.fSAT.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,5 +24,11 @@ public class UserService  {
     }
     public Optional<User> findById(int id){
         return userRepository.findById(id);
+    }
+    public List<User>findUserEntreprise(int idEntreprise,int idUser){
+        return userRepository.findUserEntreprise(idEntreprise,idUser);
+    }
+    public List<User>findUsersByEntreprise(Entreprise entreprise){
+        return userRepository.findUsersByEntreprise(entreprise);
     }
 }

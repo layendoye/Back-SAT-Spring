@@ -15,6 +15,7 @@ public class UserCompteActuel {
 
     @JoinColumn(name = "user_id",referencedColumnName = "id")
     @ManyToOne(optional=false)
+    @JsonIgnoreProperties({"nom","username","email","telephone","nci","image","status","roles"})
     private User user;
 
     @JoinColumn(name = "compte_id",referencedColumnName = "id")

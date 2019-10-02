@@ -236,7 +236,7 @@ public class EntrepriseController {
         return compteService.findAll();
     }
 
-    @GetMapping(value = "/utilisateur/affecterCompte/{id}")
+    @GetMapping(value = "/utilisateur/affecterCompte/{id}")//Une erreur à corriger
     @PreAuthorize("hasAnyAuthority('ROLE_admin_Principal','ROLE_admin')")
     public List<UserCompteActuel> getUtilisateursActuCompte(@PathVariable int id)throws Exception{
         List<UserCompteActuel> tab=new ArrayList<UserCompteActuel>();
@@ -244,7 +244,7 @@ public class EntrepriseController {
                 ()-> new Exception("Ce compte n'existe pas !!")
         );
         User userConnecte=userDetailsService.getUserConnecte();
-        List<User> users=userConnecte.getEntreprise().getUsers();//tous les users de l entreprise
+        List<User> users=userService.findUsersByEntreprise(userConnecte.getEntreprise());//tous les users de l entreprise
 
         for(int i=0;i<users.size();i++){
             List<UserCompteActuel> tous=userCompteActuelService.findUserCompteActuelByUser(users.get(i));
@@ -257,5 +257,46 @@ public class EntrepriseController {
             }
         }
         return tab;
+    }
+
+    @GetMapping(value = "/gestion/comptes/liste")
+    public List<UserCompteActuel> listerUserCompt(){
+        int id=userDetailsService.getUserConnecte().getEntreprise().getId();
+        return userCompteActuelService.findByEntreprise(id);
+    }
+
+    @GetMapping(value = "/gestion/compte/{id}")
+    @PreAuthorize("hasAnyAuthority('ROLE_admin_Principal','ROLE_admin')")
+    public UserCompteActuel listerUserCompt(@PathVariable int id) throws Exception {
+        UserCompteActuel userCompteActuel=userCompteActuelService.findById(id).orElseThrow(
+                ()->new Exception("Not find")
+        );
+        return userCompteActuel;
+    }
+
+    @GetMapping(value = "/user/{id}")
+    public User listerUser(@PathVariable int id) throws Exception {
+        User user=userService.findById(id).orElseThrow(
+                ()->new Exception("Cet utilisateur n'existe pas !! ")
+        );
+        User userConnecte=userDetailsService.getUserConnecte();
+        if(userConnecte.getEntreprise().getId()!=user.getEntreprise().getId()){
+            throw new Exception("Cet utilisateur n'est pas membre de votre entreprise ! ");
+        }
+        return user;
+    }
+
+    @GetMapping(value = "/lister/users")
+    @PreAuthorize("hasAnyAuthority('ROLE_Super_admin','ROLE_admin','ROLE_admin_Principal')")
+    public List<User> listerLesUser() throws Exception {
+        User userConnecte=userDetailsService.getUserConnecte();
+        return userService.findUserEntreprise(userConnecte.getEntreprise().getId(),userConnecte.getId());
+    }
+
+    @GetMapping(value = "/lister/users/all")
+    @PreAuthorize("hasAnyAuthority('ROLE_Super_admin','ROLE_admin','ROLE_admin_Principal')")
+    public List<User> listerTousUser(){
+        User userConnecte=userDetailsService.getUserConnecte();
+        return userService.findUsersByEntreprise(userConnecte.getEntreprise());
     }
 }
