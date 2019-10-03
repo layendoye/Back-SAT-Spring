@@ -43,9 +43,6 @@ public class Transaction {
     @ManyToOne(optional=false)
     private UserCompteActuel userComptePartenaireEmetteur;
 
-
-    @NotBlank
-    @Size(min=3, max = 50)
     private long montant;
 
 
