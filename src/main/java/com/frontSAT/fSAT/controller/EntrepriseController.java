@@ -60,11 +60,15 @@ public class EntrepriseController {
         compteService.save(compte);
         User user=new User(registrationEntrep.getNom(),registrationEntrep.getUsername(),registrationEntrep.getEmail(),registrationEntrep.getPassword(),registrationEntrep.getTelephone(),registrationEntrep.getNci(),registrationEntrep.getImage(),"Actif");
         user.setPassword(encoder.encode(user.getPassword()));
+
+
         Set<Role> roles = new HashSet<>();
         Role role=new Role();
         role.setId(3);//admin partenaire
         roles.add(role);
         user.setRoles(roles);
+
+
         user.setEntreprise(entreprise);
         userService.save(user);
 

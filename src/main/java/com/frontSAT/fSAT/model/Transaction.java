@@ -46,7 +46,7 @@ public class Transaction {
 
     @NotBlank
     @Size(min=3, max = 50)
-    private int montant;
+    private long montant;
 
 
     private int frais;
@@ -84,6 +84,7 @@ public class Transaction {
 
 
     private String status;
+
 
     public int getId() {
         return id;
@@ -141,11 +142,11 @@ public class Transaction {
         this.userComptePartenaireEmetteur = userComptePartenaireEmetteur;
     }
 
-    public int getMontant() {
+    public long getMontant() {
         return montant;
     }
 
-    public void setMontant(int montant) {
+    public void setMontant(long montant) {
         this.montant = montant;
     }
 
