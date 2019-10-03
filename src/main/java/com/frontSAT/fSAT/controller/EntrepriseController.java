@@ -146,9 +146,15 @@ public class EntrepriseController {
         else if(user.getId()==1){
             throw new Exception("Impossible de bloquer le super-admin principal !");
         }
-        /*if(userConnecte.getRoles()[0]=='ROLE_admin' && user.getRoles()[0]=='ROLE_admin-Principal'){
+        Set<Role> roles=userConnecte.getRoles();
+        Role monRole=new Role();
+        for(Role role : roles){
+            monRole=role;
+        }
+        String leRole= monRole.getName().name();
+        if(leRole.equals("ROLE_admin") && leRole.equals("ROLE_admin-Principal")){
             throw new Exception("Impossible de bloquer l' admin principal !");
-        }*/
+        }
         String msg;
         if(user.getStatus().equals("Actif")){
             user.setStatus("Bloqué");
@@ -356,4 +362,14 @@ public class EntrepriseController {
         return compte;
     }
 
+    @GetMapping(value = "/role", consumes = {MediaType.APPLICATION_JSON_VALUE})
+    public String role() throws Exception {
+        User userConnecte=userDetailsService.getUserConnecte();
+        Set<Role> roles=userConnecte.getRoles();
+        Role monRole=new Role();
+        for(Role role : roles){
+            monRole=role;
+        }
+        return monRole.getName().name();
+    }
 }
