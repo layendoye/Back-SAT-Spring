@@ -17,7 +17,7 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 @RestController
-@CrossOrigin
+@CrossOrigin(origins = "http://localhost:4200")
 public class EntrepriseController {
     @Autowired
     EntrepriseService entrepriseService;
@@ -38,6 +38,7 @@ public class EntrepriseController {
     public List<Entreprise> lister(){
         return entrepriseService.findPartenaire();
     }
+
     @GetMapping(value = "/entreprise/{id}")
     public Entreprise lister(@PathVariable int id) throws Exception {
         Entreprise entreprise = entrepriseService.findById(id).orElseThrow(

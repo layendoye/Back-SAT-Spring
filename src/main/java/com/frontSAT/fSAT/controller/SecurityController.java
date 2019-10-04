@@ -90,9 +90,7 @@ public class SecurityController {
     }
 
     @GetMapping(value = "/userConnecte")
-    public ResponseEntity<String> userConnecte(){
-        userDetailsService.getUserConnecte();
-        return new ResponseEntity<>("Enregistrer", HttpStatus.OK);
-
+    public User userConnecte(){
+        return userDetailsService.getUserConnecte();
     }
 }
