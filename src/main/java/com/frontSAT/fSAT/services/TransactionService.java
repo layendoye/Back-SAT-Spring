@@ -25,4 +25,5 @@ public class TransactionService {
     public Optional<Transaction> findById(int id){
         return transactionRepository.findById(id);
     }
+    public Optional<Transaction> findTransactionByCode(String code){ return transactionRepository.findTransactionByCode(code); }
 }

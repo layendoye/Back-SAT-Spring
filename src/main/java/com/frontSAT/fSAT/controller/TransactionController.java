@@ -16,7 +16,7 @@ import java.util.Date;
 import java.util.List;
 
 @RestController
-@CrossOrigin
+@CrossOrigin(origins = "*", maxAge = 3600)
 public class TransactionController {
 
     @Autowired
@@ -94,6 +94,31 @@ public class TransactionController {
 
     }
 
+
+    @PostMapping(value = "/transation/retrait")
+    @PreAuthorize("hasAnyAuthority('ROLE_utilisateur','ROLE_admin','ROLE_admin_Principal')")
+    public void retrait(@RequestBody TransactionForm retraitForm) throws Exception {
+         Transaction retrait=transactionService.findTransactionByCode(retraitForm.getCode()).orElseThrow(
+                 ()-> new Exception("Ce code n'existe pas !")
+         );
+        if(!retrait.getStatus().equals("Envoyer")){
+            throw new Exception("Montant déja retiré !");
+        }
+        long montant=retraitForm.getMontant();
+        long commissionRecep=retrait.getCommissionEmetteur()/2;
+        User userConnecte=userDetailsService.getUserConnecte();
+        List<UserCompteActuel> userCompteActuels=userCompteActuelService.findUserCompteActuelByUser(userConnecte);
+        if(userCompteActuels.size()==0){
+            throw new Exception("L'utilisateur n'est affecté à aucun compte ");
+        }
+        UserCompteActuel userCompte=userCompteActuels.get(userCompteActuels.size()-1);
+        retrait.setNciRecepteur(retraitForm.getNciRecepteur());
+        retrait.setDateReception(new Date());
+        retrait.setCommissionRecepteur(commissionRecep);
+        retrait.setUserComptePartenaireRecepteur(userCompte);
+        retrait.setStatus("Retirer");
+        transactionService.save(retrait);
+    }
     /*
     public function recuDeTransaction(String type,Transaction transaction){
         $senegal='Sénégal';

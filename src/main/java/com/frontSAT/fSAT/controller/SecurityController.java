@@ -19,8 +19,8 @@ import java.util.List;
 import java.util.Set;
 
 @RestController
-@CrossOrigin
-
+@CrossOrigin(origins = "*", maxAge = 3600)
+@RequestMapping(value = "/")
 public class SecurityController {
     @Autowired
     private UserService userService;
