@@ -84,8 +84,9 @@ public class SecurityController {
         return new ResponseEntity<>("Modifier", HttpStatus.OK);
     }
 
-    @GetMapping(value = "/liste")
+    @GetMapping(value = "/profil")
     public List<Role> profil(){
+
         return roleService.findAll();
     }
 

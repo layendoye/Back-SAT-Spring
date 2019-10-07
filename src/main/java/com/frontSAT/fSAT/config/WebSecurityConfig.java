@@ -49,6 +49,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {//c est ici
     protected void configure(HttpSecurity httpSecurity) throws Exception {
         // We don't need CSRF for this example
         httpSecurity.csrf().disable()
+        //pour regler le probleme des cors---------
+                .cors().and()
         // dont authenticate this particular request
                 .authorizeRequests().antMatchers("/connexion","/login").permitAll().
         // all other requests need to be authenticated

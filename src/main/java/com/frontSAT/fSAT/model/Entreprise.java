@@ -48,12 +48,17 @@ public class Entreprise {
     @OneToMany(mappedBy ="entreprise")
     //Pour la serialisation à double sens (l objet service dans la classe user)
     @JsonIgnoreProperties({"entreprise", "nom","username","email","telephone","nci","image","status","roles"})
-    public List<User> users;
+    private List<User> users;
 
     @OneToMany(mappedBy ="entreprise")
     @JsonIgnoreProperties("entreprise")//Pour la serialisation à double sens (l objet service dans la classe user)
-    public List<Compte> comptes;
+    private List<Compte> comptes;
+
+    @Transient
+    private long soldeGlobal;
+
     public Entreprise() {}
+
 
     public Entreprise(@NotBlank @Size(min = 3, max = 50) String raisonSociale, @NotBlank @Size(min = 3, max = 50) String ninea, @NotBlank @Size(min = 3, max = 50) String adresse, @NotBlank @Size(min = 3, max = 50) String status, @NotBlank @Size(min = 3, max = 50) String telephoneEntreprise, @NotBlank @Size(min = 3, max = 50) String emailEntreprise) {
         this.raisonSociale = raisonSociale;
@@ -134,5 +139,13 @@ public class Entreprise {
 
     public void setComptes(List<Compte> comptes) {
         this.comptes = comptes;
+    }
+
+    public long getSoldeGlobal(){
+        List<Compte>tabCompte=this.getComptes();
+        for(int i=0;i<tabCompte.size();i++){
+            this.soldeGlobal+=tabCompte.get(i).getSolde();
+        }
+        return this.soldeGlobal;
     }
 }

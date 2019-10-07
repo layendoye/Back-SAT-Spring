@@ -3,6 +3,7 @@ package com.frontSAT.fSAT.model;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import org.hibernate.validator.constraints.Range;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
@@ -18,7 +19,7 @@ public class Depot {
     private int id;
 
     private Date date;
-
+    @Range(min=75000)
     private long montant;
 
     @JoinColumn(name = "user_id",referencedColumnName = "id")

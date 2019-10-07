@@ -131,6 +131,7 @@ public class EntrepriseController {
             entreprise.setStatus("Actif");
             msg="Débloqué";
         }
+        entrepriseService.save(entreprise);
         Message message=new Message(200,msg);
         return message;
     }
@@ -145,7 +146,7 @@ public class EntrepriseController {
         if(userConnecte==user){
             throw new Exception("Impossible de se bloquer soit même !");
         }
-        else if(user.getEntreprise()!=userConnecte.getEntreprise()){
+        else if(user.getEntreprise().getId()!=userConnecte.getEntreprise().getId()){
             throw new Exception("Impossible de bloquer cet utilisateur !");
         }
         else if(user.getId()==1){
@@ -156,8 +157,16 @@ public class EntrepriseController {
         for(Role role : roles){
             monRole=role;
         }
-        String leRole= monRole.getName().name();
-        if(leRole.equals("ROLE_admin") && leRole.equals("ROLE_admin-Principal")){
+        String mnRole= monRole.getName().name();
+
+        Set<Role> rolesBloq=user.getRoles();
+        Role sonRole=new Role();
+        for(Role role : rolesBloq){
+            sonRole=role;
+        }
+        String snRole= sonRole.getName().name();
+
+        if(mnRole.equals("ROLE_admin") && snRole.equals("ROLE_admin-Principal")){
             throw new Exception("Impossible de bloquer l' admin principal !");
         }
         String msg;
@@ -169,6 +178,7 @@ public class EntrepriseController {
             user.setStatus("Actif");
             msg="Débloqué";
         }
+        userService.save(user);
         Message message=new Message(200,msg);
         return message;
     }
