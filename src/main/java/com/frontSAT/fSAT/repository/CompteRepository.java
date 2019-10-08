@@ -2,6 +2,7 @@ package com.frontSAT.fSAT.repository;
 
 
 import com.frontSAT.fSAT.model.Compte;
+import com.frontSAT.fSAT.model.Entreprise;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -16,4 +17,5 @@ public interface CompteRepository extends JpaRepository<Compte, Integer> {
     public Optional<Compte> findCompteByNumeroCompte(String numeroCompte);
     //@Query("SELECT c FROM Compte c WHERE c.entreprise.ninea = :ninea")
     //Compte findByNinea(@Param("ninea") String ninea);
+    List<Compte>findComptesByEntreprise(Entreprise entreprise);
 }

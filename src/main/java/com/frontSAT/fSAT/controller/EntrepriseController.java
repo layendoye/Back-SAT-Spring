@@ -207,7 +207,7 @@ public class EntrepriseController {
     }
 
     @PostMapping(value = "/changer/compte", consumes = {MediaType.APPLICATION_JSON_VALUE})
-    @PreAuthorize("hasAnyAuthority('ROLE_admin-Principal','ROLE_admin')")
+    @PreAuthorize("hasAnyAuthority('ROLE_admin_Principal','ROLE_admin')")
     public Message changeCompte(@RequestBody AffectationCompte affectationCompte) throws Exception {
 
         Compte compte=compteService.findById(affectationCompte.getCompte()).orElseThrow(
@@ -251,6 +251,13 @@ public class EntrepriseController {
         return entreprise.getComptes();
     }
 
+    @GetMapping(value = "/MesComptes")
+    @PreAuthorize("hasAnyAuthority('ROLE_Super_admin','ROLE_admin_Principal','ROLE_admin')")
+    public List<Compte> getCompte() throws Exception {
+        Entreprise entreprise=userDetailsService.getUserConnecte().getEntreprise();
+        return compteService.findComptesByEntreprise(entreprise);
+    }
+
     @GetMapping(value = "/comptes/all")
     @PreAuthorize("hasAnyAuthority('ROLE_Super_admin')")
     public List<Compte> getAllCompte(){
@@ -278,6 +285,14 @@ public class EntrepriseController {
             }
         }
         return tab;
+    }
+
+    @GetMapping(value = "/comptes/affecte/user/{id}")
+    @PreAuthorize("hasAnyAuthority('ROLE_admin_Principal','ROLE_admin')")
+    public List<UserCompteActuel> userComptesAffecte(@PathVariable int id) {
+        User user=userService.findById(id).orElseThrow();
+        List<UserCompteActuel> userCompteActuels=userCompteActuelService.findUserCompteActuelByUser(user);
+        return userCompteActuels;
     }
 
     @GetMapping(value = "/gestion/comptes/liste")
@@ -323,11 +338,13 @@ public class EntrepriseController {
 
     @GetMapping(value = "/compte/user/{id}")
     @PreAuthorize("hasAnyAuthority('ROLE_Super_admin','ROLE_admin','ROLE_admin_Principal')")
-    public List<UserCompteActuel> userCompte(@PathVariable int id)throws Exception{
+    public UserCompteActuel userCompte(@PathVariable int id)throws Exception{
         User user=userService.findById(id).orElseThrow(
                 ()->new Exception("Cet utilisateur n'existe pas !!")
         );
-        return userCompteActuelService.findUserCompteActuelByUser(user);
+        List<UserCompteActuel> userCompteActuels=userCompteActuelService.findUserCompteActuelByUser(user);
+        UserCompteActuel userCompteActuel=userCompteActuels.get(userCompteActuels.size()-1);
+        return userCompteActuel;
     }
 
     @PostMapping(value = "/compte/Mesdepots", consumes = {MediaType.APPLICATION_JSON_VALUE})

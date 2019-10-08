@@ -1,6 +1,7 @@
 package com.frontSAT.fSAT.services;
 
 import com.frontSAT.fSAT.model.Compte;
+import com.frontSAT.fSAT.model.Entreprise;
 import com.frontSAT.fSAT.repository.CompteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -25,5 +26,8 @@ public class CompteService {
     }
     public Optional<Compte> findByNumeroCompte(String numeroCompte){
         return compteRepository.findCompteByNumeroCompte(numeroCompte);
+    }
+    public List<Compte>findComptesByEntreprise(Entreprise entreprise){
+        return compteRepository.findComptesByEntreprise(entreprise);
     }
 }

@@ -1,6 +1,7 @@
 package com.frontSAT.fSAT.controller;
 
 import com.frontSAT.fSAT.form.RegistrationUser;
+import com.frontSAT.fSAT.model.Message;
 import com.frontSAT.fSAT.model.Role;
 import com.frontSAT.fSAT.model.User;
 import com.frontSAT.fSAT.services.RoleService;
@@ -33,7 +34,7 @@ public class SecurityController {
 
     @PostMapping(value = "/inscription")
     @PreAuthorize("hasAnyAuthority('ROLE_Super_admin','ROLE_admin_Principal','ROLE_admin')")
-    public ResponseEntity<String> inscriptionUtilisateur(RegistrationUser registrationUser) throws Exception {
+    public Message inscriptionUtilisateur(RegistrationUser registrationUser) throws Exception {
         if(registrationUser.getPassword().equals(registrationUser.getConfirmPassword())==false){
             throw new Exception("Les deux mot de passe ne correspondent pas");
         }
@@ -46,11 +47,11 @@ public class SecurityController {
         user.setRoles(roles);
         user.setEntreprise(userDetailsService.getUserConnecte().getEntreprise());
         userService.save(user);
-        return new ResponseEntity<>("Enregistrer", HttpStatus.OK);
+        return new Message(200,"Enregistrer");
     }
 
     @PostMapping(value = "/user/update/{id}", consumes = {MediaType.APPLICATION_JSON_VALUE})
-    public ResponseEntity<String> updateUser(@RequestBody RegistrationUser updateUser, @PathVariable int id) throws Exception {
+    public Message updateUser(@RequestBody RegistrationUser updateUser, @PathVariable int id) throws Exception {
         User userConnecte=userDetailsService.getUserConnecte();
         if(updateUser.getPassword().equals(updateUser.getConfirmPassword())==false){
             throw new Exception("Les deux mot de passe ne correspondent pas");
@@ -81,7 +82,7 @@ public class SecurityController {
         roles.add(role);
         user.setRoles(roles);
         userService.save(user);
-        return new ResponseEntity<>("Modifier", HttpStatus.OK);
+        return new Message(200,"Enregistrer");
     }
 
     @GetMapping(value = "/profil")
